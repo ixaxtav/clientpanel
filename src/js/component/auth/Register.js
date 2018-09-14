@@ -6,7 +6,7 @@ import { firebaseConnect } from 'react-redux-firebase';
 import { notifyUser } from '../../../actions/notifyActions.js';
 import Alert from '../layout/Alert';
 
-class Login extends React.Component{
+class Register extends React.Component{
 constructor(){
     super();
     this.state = {
@@ -15,17 +15,21 @@ constructor(){
     };
 }
 
+UNSAFE_componentWillMount(){
+    const { allowRegistration } = this.props.settings;
+    
+    if(!allowRegistration){
+        this.props.history.push('/');
+    }
+}
+
 onSubmit(e){
     e.preventDefault();
     
     const {firebase, notifyUser} = this.props;
     const {email, password } = this.state;
-    
-    firebase.login({
-        email,
-        password
-    })
-    .catch(err => notifyUser ('Invalid Login Credentials', 'error'));
+  // Register with firebase
+    firebase.createUser({ email, password}).catch(err => notifyUser('That User Already Exist', 'error'));
 }
 
 onChange(e){
@@ -45,7 +49,7 @@ onChange(e){
                             <h1 className = "text-center pb-4 pt-3">
                                 <span className = "text-primary">
                                     <i className = "fas fa-lock"></i>{' '} 
-                                    Login
+                                    Register
                                 </span>
                             </h1>
                             <form onSubmit = {(e) => {this.onSubmit(e);}}>
@@ -57,7 +61,7 @@ onChange(e){
                                     <label htmlFor = "password">Password</label>
                                     <input type="password" className = "form-control" name="password" required value = {this.state.password} onChange = {(e) => {this.onChange(e);}}/>
                                 </div>
-                                <input type= "submit" value= "Login" className= "btn btn-primary btn-block"/>
+                                <input type= "submit" value= "Register" className= "btn btn-primary btn-block"/>
                             </form>
                         </div>
                     </div>
@@ -67,17 +71,20 @@ onChange(e){
     }
 }
 
-Login.propTypes = {
+Register.propTypes = {
     firebase: PropTypes.object,
     notifyUser: PropTypes.func,
     message: PropTypes.string,
     messageType: PropTypes.string,
-    notify: PropTypes.object
+    notify: PropTypes.object,
+    settings: PropTypes.object,
+    history
 };
 
 export default compose(
         firebaseConnect(),
         connect((state, props) => ({
-            notify: state.notify
+            notify: state.notify,
+            settings: state.settings
         }), { notifyUser})
-    )(Login);
+    )(Register);

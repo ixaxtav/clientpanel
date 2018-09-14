@@ -37,6 +37,9 @@ class AddClient extends React.Component{
     }
     
     render(){
+        
+        const { disableBalanceOnAdd } = this.props.settings;
+        
         return (
             <div>
                 <div className ="row">
@@ -110,6 +113,7 @@ class AddClient extends React.Component{
                                     
                                     onChange = {(e) => {this.onChange(e);}}
                                     value = {this.state.balance}
+                                    disabled = {disableBalanceOnAdd}
                                 />
                             </div>    
                             
@@ -126,7 +130,13 @@ class AddClient extends React.Component{
 
 AddClient.propTypes = {
     firestore: PropTypes.object,
-    history
+    history,
+    settings: PropTypes.object
 };
 
-export default firestoreConnect()(AddClient);
+export default compose(
+    firestoreConnect(),
+    connect((state, props) => ({
+        settings: state.settings
+    }))
+    )(AddClient);

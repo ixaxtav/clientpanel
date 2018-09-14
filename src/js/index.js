@@ -19,6 +19,8 @@ import AddClient from './component/clients/AddClient.js';
 import EditClient from './component/clients/EditClient.js';
 import ClientDetails from './component/clients/ClientDetails.js';
 import Login from './component/auth/Login.js';
+import Register from './component/auth/Register.js';
+import Settings from './component/settings/Settings.js';
 
 
 class App extends React.Component{
@@ -35,7 +37,9 @@ class App extends React.Component{
                                 <Route exact path="/client/add" component={UserIsAuthenticated(AddClient)} />
                                 <Route exact path="/client/edit/:id" component={UserIsAuthenticated(EditClient)} />
                                 <Route exact path="/client/:id" component={UserIsAuthenticated(ClientDetails)} />
+                                <Route exact path="/settings" component={UserIsAuthenticated(Settings)} />
                                 <Route exact path="/Login" component={UserIsNotAuthenticated(Login)} />
+                                <Route exact path="/register" component={UserIsNotAuthenticated(Register)} />
                             </Switch>
                         </div>
                     </div>

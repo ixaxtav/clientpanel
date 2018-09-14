@@ -33,7 +33,7 @@ constructor(){
     render(){
         const {isAuthenticated} = this.state;
         const {auth} = this.props;
-        
+        const {allowRegistration} = this.props.settings;
         return (
             <nav className="navbar navbar-expand-md navbar-dark bg-primary mb-4">
                 <div className="container">
@@ -60,6 +60,11 @@ constructor(){
                                         { auth.email }
                                     </a>
                                 </li>
+                                <li className ="nav-item">
+                                    <Link to="/settings" className = "nav-link">
+                                    Settings
+                                    </Link>
+                                </li>
                                 <li className = "nav-item">
                                     <a href = "#!" className = "nav-link" onClick = {(e) => {this.onLogoutClick(e);}}>
                                         Logout
@@ -68,6 +73,22 @@ constructor(){
                             </ul>
                             ): null}
                         
+                        {allowRegistration && !isAuthenticated ? (
+                            <ul className = "navbar-nav ml-auto">
+                                <li className = "nav-item">
+                                    <Link to = "/login" className = "nav-link">
+                                        Login
+                                    </Link>
+                                </li>
+                                <li className = "nav-item">
+                                    <Link to = "/register" className = "nav-link">
+                                        Register
+                                    </Link>
+                                </li>                                
+                                
+                            </ul>
+                        
+                        ): null}  
                     </div>
                 </div>
             </nav>
@@ -77,12 +98,14 @@ constructor(){
 
 AppNavBar.propTypes = {
   firebase: PropTypes.object,
-  auth: PropTypes.object
+  auth: PropTypes.object,
+  settings: PropTypes.object
 };
 
 export default compose(
     firebaseConnect(),
     connect((state, props) =>({
-        auth: state.firebase.auth
+        auth: state.firebase.auth,
+        settings: state.settings
     }))
     )(AppNavBar);
